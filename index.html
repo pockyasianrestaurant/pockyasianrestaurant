@@ -2,84 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pocky Asian Restaurant</title>
   <link rel="stylesheet" href="https://use.typekit.net/wtk0tjv.css">
   <style>
-    :root {
-      --pink: #F7028B;
-      --red: #E10600;
-      --yellow: #FFD700;
-      --black: #1D1D1D;
-      --white: #ffffff;
-    }
-
     body {
-      margin: 0;
       font-family: 'aptly', sans-serif;
-      background-color: var(--white);
-      color: var(--black);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       text-align: center;
-    }
-
-    .logo img {
-      content: url("POCKY_Logo_Full_H_RGB.png");
-      max-width: 40%;
-      height: auto;
-      margin-top: 2rem;
-    }
-
-    .subheading {
-      font-size: 1.5rem;
-      margin: 2rem 2rem;
-      letter-spacing: 0.1rem;
-    }
-
-    .notify-btn {
-      background: var(--red);
-      color: var(--white);
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      cursor: pointer;
-      margin: 0rem 0;
-      font-family: 'aptly', sans-serif;
-    }
-
-    .social-icons {
-      margin: 2rem 0;
-    }
-
-    .social-icons a {
-      margin: 0 0.5rem;
-    }
-
-    .social-icons img {
-      width: 40px;
-      height: 40px;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--red);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: var(--white);
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease;
+      margin: 0;
+      padding: 0;
     }
 
     .modal input {
@@ -90,146 +22,54 @@
       font-size: 1rem;
     }
 
-    .submit-btn {
-      background: var(--yellow);
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-      font-family: 'aptly', sans-serif;
+    .form-field {
+      margin: 1rem auto;
+      max-width: 400px;
+      text-align: left;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 2rem;
-      cursor: pointer;
+    .form-field label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
     }
 
-    .thank-you {
-      display: none;
-      margin-top: 2rem;
-      color: var(--white);
-      font-size: 1.2rem;
+    @media (max-width: 768px) {
+      .form-field label {
+        display: none;
+      }
+      .form-field input::placeholder {
+        color: #aaa;
+      }
     }
-
-    .error {
-      color: #fff;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .modal-footer-logo img {
-      max-width: 10%;
-      margin-top: 1rem;
-    }
-   
-@media (max-width: 768px) {
-  .logo img {
-    content: url("POCKY_Logo_FULL_V_RGB.png");
-    max-width: 30%;
-  }
-
-  .modal-footer-logo img {
-    max-width: 30%;
-  }
-}
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img alt="Pocky Asian Restaurant Logo">
-  </div>
-  <div class="subheading">COMING SOON TO MALENY</div>
-  <button class="notify-btn" onclick="openModal()">NOTIFY ME</button>
+<div class="modal">
 
-  <div class="social-icons">
-    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank">
-      <img src="IGLogo.jpg" alt="Instagram">
-    </a>
-    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank">
-      <img src="FBLogo.jpg" alt="Facebook">
-    </a>
-  </div>
-
-  <div id="modal" class="modal">
-    <div class="close-btn" onclick="closeModal()">✕</div>
-    <h2>Notify me when Pocky Asian Restaurant opens</h2>
-   <form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
+<form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
   <input type="hidden" name="form-name" value="Subscribers" />
   <p hidden>
     <label>Don’t fill this out: <input name="bot-field" /></label>
   </p>
-  <p>
-  <label>Name:
-      <input type="text" name="name" required />
-    </label>
-  </p>
-  <p>
-    <label>Email:
-      <input type="email" name="email" required />
-    </label>
-  </p>
-  <p>
-    <label>Postcode:
-      <input type="text" name="postcode" required />
-    </label>
-  </p>
+  <div class="form-field">
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" placeholder="Name" required />
+  </div>
+  <div class="form-field">
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" placeholder="Email" required />
+  </div>
+  <div class="form-field">
+    <label for="postcode">Postcode</label>
+    <input type="text" name="postcode" id="postcode" placeholder="Postcode" required />
+  </div>
   <p>
     <button type="submit" class="submit-btn">SUBMIT</button>
   </p>
   <div class="error" id="error"></div>
 </form>
-    <div class="thank-you" id="thankYouMessage">Thank you for signing up. We'll be in touch soon.</div>
-    <p style="margin: 2rem 2rem; max-width: 400px; font-size: 1.0rem;">By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.</p>
-    <div class="modal-footer-logo">
-      <img src="POCKY_Logo_H_REV.png" alt="Pocky Logo Reverse">
-    </div>
-  </div>
 
- <script>
-  const modal = document.getElementById('modal');
-
-  function openModal() {
-    modal.style.display = 'flex';
-    requestAnimationFrame(() => {
-      modal.style.opacity = '1';
-      modal.style.visibility = 'visible';
-    });
-  }
-
-  function closeModal() {
-    modal.style.opacity = '0';
-    modal.style.visibility = 'hidden';
-    setTimeout(() => {
-      modal.style.display = 'none';
-    }, 500);
-  }
-
-  document.getElementById('notifyForm').addEventListener('submit', function (e) {
-    const form = e.target;
-    const name = form.elements['name'].value.trim();
-    const email = form.elements['email'].value.trim();
-    const postcode = form.elements['postcode'].value.trim();
-    const error = document.getElementById('error');
-
-    if (!name || !email || !postcode) {
-      e.preventDefault();
-      error.textContent = 'All fields are required.';
-      return;
-    }
-
-   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      e.preventDefault();
-      error.textContent = 'Please enter a valid email address.';
-      return;
-    }
-
-    // No preventDefault here — let the form submit to Netlify
-    error.textContent = '';
-  });
-</script>
+</div>
 </body>
 </html>
