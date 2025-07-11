@@ -157,19 +157,31 @@
   <div id="modal" class="modal">
     <div class="close-btn" onclick="closeModal()">✕</div>
     <h2>Notify me when Pocky Asian Restaurant opens</h2>
-    <form name="Subscribers" method="POST" netlify>
-       <p>
-    <label>Name: <input type="text" name="name" /></label>
+   <form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
+  <input type="hidden" name="form-name" value="Subscribers" />
+  <p hidden>
+    <label>Don’t fill this out: <input name="bot-field" /></label>
   </p>
   <p>
-    <label>Email: <input type="email" name="email" /></label>
+    <label>Name:<br>
+      <input type="text" name="name" required />
+    </label>
   </p>
-      <p>
-    <label>Postcode: <input type="text" name="postcode" /></label>
+  <p>
+    <label>Email:<br>
+      <input type="email" name="email" required />
+    </label>
   </p>
-      <p> <button type="submit" class="submit-btn">SUBMIT</button></p>
-      <div class="error" id="error"></div>
-    </form>
+  <p>
+    <label>Postcode:<br>
+      <input type="text" name="postcode" required />
+    </label>
+  </p>
+  <p>
+    <button type="submit" class="submit-btn">SUBMIT</button>
+  </p>
+  <div class="error" id="error"></div>
+</form>
     <div class="thank-you" id="thankYouMessage">Thank you for signing up. We'll be in touch soon.</div>
     <p style="margin: 2rem 2rem; max-width: 400px; font-size: 1.0rem;">By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.</p>
     <div class="modal-footer-logo">
@@ -177,44 +189,47 @@
     </div>
   </div>
 
-  <script>
-    const modal = document.getElementById('modal');
+ <script>
+  const modal = document.getElementById('modal');
 
-    function openModal() {
-      modal.style.display = 'flex';
-      requestAnimationFrame(() => {
-        modal.style.opacity = '1';
-        modal.style.visibility = 'visible';
-      });
-    }
-
-    function closeModal() {
-      modal.style.opacity = '0';
-      modal.style.visibility = 'hidden';
-      setTimeout(() => {
-        modal.style.display = 'none';
-      }, 500);
-    }
-
-    document.getElementById('notifyForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const postcode = document.getElementById('postcode').value.trim();
-      const error = document.getElementById('error');
-      const thankYou = document.getElementById('thankYouMessage');
-      if (!name || !email || !postcode) {
-        error.textContent = 'All fields are required.';
-        return;
-      }
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-        error.textContent = 'Please enter a valid email address.';
-        return;
-      }
-      error.textContent = '';
-      document.getElementById('notifyForm').style.display = 'none';
-      thankYou.style.display = 'block';
+  function openModal() {
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      modal.style.visibility = 'visible';
     });
-  </script>
+  }
+
+  function closeModal() {
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 500);
+  }
+
+  document.getElementById('notifyForm').addEventListener('submit', function (e) {
+    const form = e.target;
+    const name = form.elements['name'].value.trim();
+    const email = form.elements['email'].value.trim();
+    const postcode = form.elements['postcode'].value.trim();
+    const error = document.getElementById('error');
+
+    if (!name || !email || !postcode) {
+      e.preventDefault();
+      error.textContent = 'All fields are required.';
+      return;
+    }
+
+    if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
+      e.preventDefault();
+      error.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    // No preventDefault here — let the form submit to Netlify
+    error.textContent = '';
+  });
+</script>
 </body>
 </html>
