@@ -126,26 +126,6 @@
       margin-top: 1rem;
     }
    
-    .form-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.form-row label {
-  margin-right: 1rem;
-  font-weight: bold;
-  min-width: 80px; /* Adjust as needed */
-  text-align: right;
-}
-
-.form-row input {
-  flex: 1;
-  max-width: 300px;
-  padding: 0.5rem;
-}
-
 @media (max-width: 768px) {
   .logo img {
     content: url("POCKY_Logo_FULL_V_RGB.png");
@@ -183,18 +163,20 @@
     <label>Don’t fill this out: <input name="bot-field" /></label>
   </p>
   <p>
-  <div class="form-row">
-  <label for="name">Name:</label>
-  <input type="text" name="name" id="name" required />
-</div>
-<div class="form-row">
-  <label for="email">Email:</label>
-  <input type="email" name="email" id="email" required />
-</div>
-<div class="form-row">
-  <label for="postcode">Postcode:</label>
-  <input type="text" name="postcode" id="postcode" required />
-</div>
+  <label>Name:
+      <input type="text" name="name" required />
+    </label>
+  </p>
+  <p>
+    <label>Email:
+      <input type="email" name="email" required />
+    </label>
+  </p>
+  <p>
+    <label>Postcode:
+      <input type="text" name="postcode" required />
+    </label>
+  </p>
   <p>
     <button type="submit" class="submit-btn">SUBMIT</button>
   </p>
