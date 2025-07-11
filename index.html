@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocky Asian Restaurant</title>
+  <link rel="stylesheet" href="https://use.typekit.net/wtk0tjv.css">
+  <style>
+    :root {
+      --pink: #F7028B;
+      --red: #E10600;
+      --yellow: #FFD700;
+      --black: #1D1D1D;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'aptly', sans-serif;
+      background-color: var(--white);
+      color: var(--black);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .logo img {
+      content: url("POCKY_Logo_Full_H_RGB.png");
+      max-width: 50%;
+      height: auto;
+      margin-top: 2rem;
+    }
+
+    .subheading {
+      font-size: 1.5rem;
+      margin: 1rem 0;
+      letter-spacing: 0.1rem;
+    }
+
+    .notify-btn {
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 2rem 0;
+      font-family: 'aptly', sans-serif;
+    }
+
+    .social-icons {
+      margin: 1rem 0;
+    }
+
+    .social-icons a {
+      margin: 0 0.5rem;
+    }
+
+    .social-icons img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--red);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease;
+    }
+
+    .modal input {
+      width: 80%;
+      max-width: 400px;
+      margin: 0.5rem;
+      padding: 0.8rem;
+      font-size: 1rem;
+    }
+
+    .submit-btn {
+      background: var(--yellow);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: 'aptly', sans-serif;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    .thank-you {
+      display: none;
+      margin-top: 2rem;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .error {
+      color: #fff;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-footer-logo img {
+      max-width: 20%;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .logo img {
+        content: url("POCKY_Logo_FULL_V_RGB.png");
+        max-width: 30%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img alt="Pocky Asian Restaurant Logo">
+  </div>
+  <div class="subheading">COMING SOON TO MALENY</div>
+  <button class="notify-btn" onclick="openModal()">NOTIFY ME</button>
+
+  <div class="social-icons">
+    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank">
+      <img src="IGLogo.jpg" alt="Instagram">
+    </a>
+    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank">
+      <img src="FBLogo.jpg" alt="Facebook">
+    </a>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="close-btn" onclick="closeModal()">✕</div>
+    <h2>Notify me when Pocky Asian Restaurant opens</h2>
+    <form id="notifyForm" name="contact" netlify>
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="text" id="postcode" placeholder="Postcode" required>
+      <button type="submit" class="submit-btn">SUBMIT</button>
+      <div class="error" id="error"></div>
+    </form>
+    <div class="thank-you" id="thankYouMessage">Thank you for signing up. We'll be in touch soon.</div>
+    <p style="margin-top: 2rem; max-width: 400px; font-size: 1.0rem;">By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.</p>
+    <div class="modal-footer-logo">
+      <img src="POCKY_Logo_H_REV.png" alt="Pocky Logo Reverse">
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+
+    function openModal() {
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
+      });
+    }
+
+    function closeModal() {
+      modal.style.opacity = '0';
+      modal.style.visibility = 'hidden';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 500);
+    }
+
+    document.getElementById('notifyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const postcode = document.getElementById('postcode').value.trim();
+      const error = document.getElementById('error');
+      const thankYou = document.getElementById('thankYouMessage');
+      if (!name || !email || !postcode) {
+        error.textContent = 'All fields are required.';
+        return;
+      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        error.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      error.textContent = '';
+      document.getElementById('notifyForm').style.display = 'none';
+      thankYou.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
