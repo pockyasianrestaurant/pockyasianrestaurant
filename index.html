@@ -124,6 +124,23 @@
       max-width: 10%;
       margin-top: 1rem;
     }
+
+    .footer-address {
+  color: #aaa;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media (min-width: 769px) {
+  .footer-address {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+  }
+}
    
 @media (max-width: 768px) {
   .logo img {
@@ -252,4 +269,7 @@
   });
 </script>
 </body>
+<div class="footer-address">
+  Shop 1, 4 Maple Street, Maleny QLD
+</div>
 </html>
