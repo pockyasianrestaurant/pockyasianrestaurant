@@ -40,6 +40,7 @@
       letter-spacing: 0.1rem;
     }
 
+    /* Buttons */
     .notify-btn {
       background: var(--red);
       color: var(--white);
@@ -47,8 +48,17 @@
       padding: 1rem 2rem;
       font-size: 1rem;
       cursor: pointer;
-      margin: 0rem 0;
       font-family: 'aptly', sans-serif;
+      text-decoration: none; /* allows <a> to look like a button */
+      display: inline-block;
+    }
+
+    .cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 0.5rem 0 0;
+      align-items: center;
     }
 
     .social-icons {
@@ -127,33 +137,33 @@
     }
 
     .footer-address {
-  color: #aaa;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 2rem;
-}
+      color: #aaa;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
 
-@media (min-width: 769px) {
-  .footer-address {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-  }
-}
-   
-@media (max-width: 768px) {
-  .logo img {
-    content: url("POCKY_Logo_FULL_V_RGB.png");
-    max-width: 30%;
-  }
+    @media (min-width: 769px) {
+      .footer-address {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+      }
+    }
 
-  .modal-footer-logo img {
-    max-width: 30%;
-  }
-}
-  
+    @media (max-width: 768px) {
+      .logo img {
+        content: url("POCKY_Logo_FULL_V_RGB.png");
+        max-width: 30%;
+      }
+
+      .modal-footer-logo img {
+        max-width: 30%;
+      }
+    }
+
     .form-field {
       margin: 1rem auto;
       max-width: 400px;
@@ -174,102 +184,122 @@
         color: #aaa;
       }
     }
-
-</style>
+  </style>
 </head>
 <body>
   <div class="logo">
     <img alt="Pocky Asian Restaurant Logo">
   </div>
-  <div class="subheading">COMING SOON TO MALENY</div>
-  <button class="notify-btn" onclick="openModal()">NOTIFY ME</button>
+
+  <!-- Updated subheading -->
+  <div class="subheading">Now open in Maleny!</div>
+
+  <!-- New Menu button + updated Keep me updated button -->
+  <div class="cta-group">
+    <a
+      class="notify-btn"
+      href="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/path/to/menu.pdf"
+      target="_blank"
+      rel="noopener"
+      aria-label="Open the Pocky menu PDF"
+    >MENU</a>
+
+    <button class="notify-btn" onclick="openModal()" aria-haspopup="dialog" aria-controls="modal">
+      KEEP ME UPDATED
+    </button>
+  </div>
 
   <div class="social-icons">
-    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank">
+    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank" rel="noopener">
       <img src="IGLogo.jpg" alt="Instagram" />
     </a>
-    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank">
+    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank" rel="noopener">
       <img src="FBLogo.jpg" alt="Facebook" />
     </a>
   </div>
 
-  <div id="modal" class="modal">
-    <div class="close-btn" onclick="closeModal()">✕</div>
-    <h2 style="margin: 0 2rem;">Notify me when Pocky Asian Restaurant opens</h2>
-   
-<form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
-  <input type="hidden" name="form-name" value="Subscribers" />
-  <p hidden>
-    <label>Don’t fill this out: <input name="bot-field" /></label>
-  </p>
-  <div class="form-field">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" placeholder="Name" required />
-  </div>
-  <div class="form-field">
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" placeholder="Email" required />
-  </div>
-  <div class="form-field">
-    <label for="postcode">Postcode</label>
-    <input type="text" name="postcode" id="postcode" placeholder="Postcode" required />
-  </div>
-  <p>
-    <button type="submit" class="submit-btn">SUBMIT</button>
-  </p>
-  <div class="error" id="error"></div>
-</form>
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="close-btn" onclick="closeModal()" aria-label="Close">✕</div>
+
+    <!-- Updated modal heading -->
+    <h2 id="modalTitle" style="margin: 0 2rem;">Keep me updated on Pocky Asian Restaurant</h2>
+
+    <form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
+      <input type="hidden" name="form-name" value="Subscribers" />
+      <p hidden>
+        <label>Don’t fill this out: <input name="bot-field" /></label>
+      </p>
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" placeholder="Name" required />
+      </div>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Email" required />
+      </div>
+      <div class="form-field">
+        <label for="postcode">Postcode</label>
+        <input type="text" name="postcode" id="postcode" placeholder="Postcode" required />
+      </div>
+      <p>
+        <button type="submit" class="submit-btn">SUBMIT</button>
+      </p>
+      <div class="error" id="error"></div>
+    </form>
 
     <div class="thank-you" id="thankYouMessage">Thank you for signing up. We'll be in touch soon.</div>
-    <p style="margin: 2rem 2rem; max-width: 400px; font-size: 1.0rem;">By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.</p>
+    <p style="margin: 2rem 2rem; max-width: 400px; font-size: 1.0rem;">
+      By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.
+    </p>
     <div class="modal-footer-logo">
       <img src="POCKY_Logo_H_REV.png" alt="Pocky Logo Reverse">
     </div>
   </div>
 
- <script>
-  const modal = document.getElementById('modal');
+  <script>
+    const modal = document.getElementById('modal');
 
-  function openModal() {
-    modal.style.display = 'flex';
-    requestAnimationFrame(() => {
-      modal.style.opacity = '1';
-      modal.style.visibility = 'visible';
+    function openModal() {
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
+      });
+    }
+
+    function closeModal() {
+      modal.style.opacity = '0';
+      modal.style.visibility = 'hidden';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 500);
+    }
+
+    document.getElementById('notifyForm').addEventListener('submit', function (e) {
+      const form = e.target;
+      const name = form.elements['name'].value.trim();
+      const email = form.elements['email'].value.trim();
+      const postcode = form.elements['postcode'].value.trim();
+      const error = document.getElementById('error');
+
+      if (!name || !email || !postcode) {
+        e.preventDefault();
+        error.textContent = 'All fields are required.';
+        return;
+      }
+
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        e.preventDefault();
+        error.textContent = 'Please enter a valid email address.';
+        return;
+      }
+
+      // No preventDefault here — let the form submit to Netlify
+      error.textContent = '';
     });
-  }
-
-  function closeModal() {
-    modal.style.opacity = '0';
-    modal.style.visibility = 'hidden';
-    setTimeout(() => {
-      modal.style.display = 'none';
-    }, 500);
-  }
-
-  document.getElementById('notifyForm').addEventListener('submit', function (e) {
-    const form = e.target;
-    const name = form.elements['name'].value.trim();
-    const email = form.elements['email'].value.trim();
-    const postcode = form.elements['postcode'].value.trim();
-    const error = document.getElementById('error');
-
-    if (!name || !email || !postcode) {
-      e.preventDefault();
-      error.textContent = 'All fields are required.';
-      return;
-    }
-
-   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      e.preventDefault();
-      error.textContent = 'Please enter a valid email address.';
-      return;
-    }
-
-    // No preventDefault here — let the form submit to Netlify
-    error.textContent = '';
-  });
-</script>
+  </script>
 </body>
+
 <div class="footer-address">
   Shop 1, 4 Maple Street, Maleny QLD
 </div>
