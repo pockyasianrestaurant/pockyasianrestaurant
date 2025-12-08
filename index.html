@@ -245,6 +245,15 @@
   cursor: pointer;
   margin-top: 1rem;
   font-family: var(--font-main);
+
+  /* add these ↓ */
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal form {
+  text-align: center;
 }
 
 .close-btn {
@@ -270,9 +279,15 @@
 }
 
 /* Modal footer logo */
+.modal-footer-logo {
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .modal-footer-logo img {
   max-width: 10%;
-  margin-top: 1rem;
 }
 
 /* Form fields */
@@ -351,7 +366,7 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
 
     <!-- GIFT (Red) -->
     <a class="tile tile--gift"
-       href="#gift-modal"
+       href="https://app.squareup.com/gift/MLVB6NCJR90DD/order"
        data-modal-target="gift-modal">
       <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-gift.svg" alt="Gift vouchers" />
     </a>
@@ -362,7 +377,7 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
    onclick="openModal(); return false;"
    aria-haspopup="dialog"
    aria-controls="modal">
-  <img src="images/icon-update.svg" alt="Keep me updated" />
+  <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-update.svg" alt="Keep me updated" />
 </a>
 
     <!-- FOOTER -->
