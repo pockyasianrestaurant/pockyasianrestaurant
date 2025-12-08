@@ -449,10 +449,11 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
         Lunch: Fri – Sun, 11:30am – 2:30pm
       </div>
 
-      <a class="footer-contact" href="mailto:hello@pocky.example">
-        <span>Contact</span>
-        <span class="footer-contact-badge">Us</span>
-      </a>
+   <a class="footer-contact" href="#" id="emailLink">
+  <span>Contact</span>
+  <span class="footer-contact-badge">Us</span>
+</a>
+
     </footer>
   </div>
 
@@ -567,6 +568,15 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
       }
     });
   }
+
+  document.getElementById('emailLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    const user = "info";
+    const domain = "pockyasianrestaurant.com";
+    window.location.href = "mailto:" + user + "@" + domain;
+  });
+</script>
+
 </script>
 
   
