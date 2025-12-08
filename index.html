@@ -50,15 +50,17 @@
 
     /* ========= TILES ========= */
 
-    .tile {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 2rem;
-      text-decoration: none;
-      position: relative;
-      transition: transform 120ms ease-out, filter 120ms ease-out;
-    }
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-decoration: none;
+  position: relative;   /* add this */
+  overflow: hidden;     /* add this */
+  transition: transform 120ms ease-out, filter 120ms ease-out;
+}
+
 
     .tile img {
       max-width: 30%;
@@ -81,6 +83,36 @@
       outline: 2px solid #000;
       outline-offset: 3px;
     }
+/* ORDER tile hover overlay (desktop) */
+
+.tile-overlay {
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(237, 0, 140, 0.5); /* same pink, 50% opacity */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* don't block clicks */
+  transition: opacity 150ms ease-out, visibility 150ms ease-out;
+}
+
+.tile-overlay-content {
+  max-width: 420px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* show overlay on hover and keyboard focus (desktop) */
+.tile--order:hover .tile-overlay,
+.tile--order:focus-visible .tile-overlay {
+  opacity: 1;
+  visibility: visible;
+}
 
     /* ========= LOGO BAND ========= */
 
@@ -352,12 +384,23 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
     </a>
 
     <!-- ORDER (Pink) -->
-    <a class="tile tile--order"
-       href="https://pocky-asian-restaurant.square.site/"
-       target="_blank" rel="noopener">
-      <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-order.svg" alt="Order online" />
-    </a>
+ <a class="tile tile--order"
+   href="https://pocky-asian-restaurant.square.site/"
+   target="_blank" rel="noopener">
+  <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-order.svg" alt="Order online" />
 
+  <!-- Hover overlay -->
+  <div class="tile-overlay">
+    <div class="tile-overlay-content">
+      <strong>LUNCH:</strong> Friday to Sunday from 11:30am<br><br>
+      <strong>DINNER:</strong> Wednesday to Sunday from 4:45pm<br><br>
+      Subject to availability.<br>
+      During busy periods, online ordering may become unavailable.<br><br>
+      Walk-in takeaway orders are welcomed.<br>
+      Allow up to 30 minutes wait time.
+    </div>
+  </div>
+</a>
     <!-- CENTRAL LOGO BAND -->
     <div class="logo-band">
       <!-- Replace with your logo file path -->
