@@ -1,348 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Pocky Asian Restaurant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://use.typekit.net/wtk0tjv.css">
+
+  <!-- Page Styles -->
   <style>
     :root {
-      --pink: #F7028B;
-      --red: #E10600;
-      --yellow: #FFD700;
-      --black: #1D1D1D;
-      --white: #ffffff;
+      /* Brand font from Adobe */
+      --font-main: "aptly", sans-serif;
+
+      --pocky-yellow: #ffce07;
+      --pocky-pink:   #ed008c;
+      --pocky-red:    #ed1b24;
+      --pocky-white:  #ffffff;
+      --text-dark:    #111111;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: 'aptly', sans-serif;
-      background-color: var(--white);
-      color: var(--black);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      font-family: var(--font-main);
+      background: var(--pocky-white);
       min-height: 100vh;
-      text-align: center;
+    }
+    /* ========= LAYOUT GRID ========= */
+
+    .page-grid {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows:
+        minmax(260px, 1.1fr)   /* top row tiles */
+        auto                   /* logo band */
+        minmax(260px, 1.1fr)   /* bottom row tiles */
+        auto;                  /* footer */
+      grid-template-areas:
+        "menu order"
+        "logo logo"
+        "gift update"
+        "footer footer";
     }
 
-    .logo img {
-      content: url("POCKY_Logo_Full_H_RGB.png");
-      max-width: 40%;
-      height: auto;
-      margin-top: 2rem;
-    }
+    /* ========= TILES ========= */
 
-    .subheading {
-      font-size: 1rem;
-      margin: 2rem 2rem;
-      letter-spacing: 0.1rem;
-    }
-
-    /* Buttons */
-    .notify-btn {
-      background: var(--red);
-      color: var(--white);
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      cursor: pointer;
-      font-family: 'aptly', sans-serif;
-      text-decoration: none; /* allows <a> to look like a button */
-      display: inline-block;
-    }
-
-    .cta-group {
+    .tile {
       display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin: 0.5rem 0 0;
       align-items: center;
-    }
-
-    .social-icons {
-      margin: 2rem 0;
-    }
-
-    .social-icons a {
-      margin: 0 0.5rem;
-      text-decoration: none;
-    }
-
-    .social-icons img {
-      width: 40px;
-      height: 40px;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--red);
-      display: flex;
-      flex-direction: column;
       justify-content: center;
-      align-items: center;
-      color: var(--white);
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease;
+      padding: 3rem 2rem;
+      text-decoration: none;
+      position: relative;
+      transition: transform 120ms ease-out, filter 120ms ease-out;
     }
 
-    .modal input {
-      width: 80%;
-      max-width: 400px;
-      margin: 0.5rem;
-      padding: 0.8rem;
-      font-size: 1rem;
-    }
-
-    .submit-btn {
-      background: var(--yellow);
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-      font-family: 'aptly', sans-serif;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 2rem;
-      cursor: pointer;
-    }
-
-    .thank-you {
-      display: none;
-      margin-top: 2rem;
-      color: var(--white);
-      font-size: 1.2rem;
-    }
-
-    .error {
-      color: #fff;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .modal-footer-logo img {
-      max-width: 10%;
-      margin-top: 1rem;
-    }
-
-    .footer-address {
-      color: #aaa;
-      font-size: 0.9rem;
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    @media (min-width: 769px) {
-      .footer-address {
-        position: absolute;
-        bottom: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .logo img {
-        content: url("POCKY_Logo_FULL_V_RGB.png");
-        max-width: 30%;
-      }
-
-      .modal-footer-logo img {
-        max-width: 30%;
-      }
-    }
-
-    .form-field {
-      margin: 1rem auto;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    .form-field label {
+    .tile img {
+      max-width: 50%;
+      height: auto;
       display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
     }
 
-    @media (max-width: 768px) {
-      .form-field label {
-        display: none;
+    .tile--menu   { grid-area: menu;   background: var(--pocky-yellow); }
+    .tile--order  { grid-area: order;  background: var(--pocky-pink);   }
+    .tile--gift   { grid-area: gift;   background: var(--pocky-red);    }
+    .tile--update { grid-area: update; background: var(--pocky-white);  }
+
+    .tile:hover,
+    .tile:focus-visible {
+      filter: brightness(1.03);
+      transform: translateY(-2px);
+    }
+
+    .tile:focus-visible {
+      outline: 2px solid #000;
+      outline-offset: 3px;
+    }
+
+    /* ========= LOGO BAND ========= */
+
+    .logo-band {
+      grid-area: logo;
+      background: var(--pocky-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .logo-band img {
+      max-width: 320px;
+      width: 40vw;
+      height: auto;
+      display: block;
+    }
+
+    /* ========= FOOTER ========= */
+
+    .footer-bar {
+      grid-area: footer;
+      background: var(--pocky-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.75rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-text {
+      color: var(--text-dark);
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .footer-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      color: var(--pocky-pink);
+      font-weight: 500;
+    }
+
+    .footer-contact-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--pocky-pink);
+      color: var(--pocky-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .footer-contact:hover {
+      opacity: 0.9;
+    }
+
+    .footer-contact:focus-visible {
+      outline: 2px solid #000;
+      outline-offset: 3px;
+    }
+
+    /* ========= MOBILE / TABLET ========= */
+
+    @media (max-width: 900px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows:
+          auto                         /* logo */
+          minmax(220px, 1fr)           /* yellow - menu */
+          minmax(220px, 1fr)           /* pink - order */
+          minmax(220px, 1fr)           /* red - gift */
+          minmax(220px, 1fr)           /* white - update */
+          auto;                        /* footer */
+        grid-template-areas:
+          "logo"
+          "menu"
+          "order"
+          "gift"
+          "update"
+          "footer";
       }
-      .form-field input::placeholder {
-        color: #aaa;
+
+      .logo-band {
+        padding: 2rem 1rem 1.5rem;
+      }
+
+      .logo-band img {
+        width: 65vw;
+        max-width: 280px;
+      }
+
+      .tile {
+        padding: 3.5rem 1.5rem;
+      }
+
+      .tile img {
+        max-width: 55%;
+      }
+
+      .footer-bar {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1.3rem 1.25rem 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tile {
+        padding: 3rem 1rem;
+      }
+      .tile img {
+        max-width: 60%;
+      }
+      .footer-text {
+        font-size: 0.8rem;
       }
     }
   </style>
-  <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '2065032040919475');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JT0Q63MN5T"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-JT0Q63MN5T');
-</script>
-  
 </head>
 <body>
-  <div class="logo">
-    <img alt="Pocky Asian Restaurant Logo">
-  </div>
 
-  <!-- Updated subheading -->
-  <div class="subheading">OPENING HOURS<BR>Wed - Sun, 4:30pm - late | Fri - Sun, 11:30am - 2:30pm</div>
-
-  <!-- New Menu button + updated Keep me updated button -->
-  <div class="cta-group">
-    <a
-      class="notify-btn"
-      href="https://pockyasianrestaurant.github.io/pockyasianrestaurant/Pocky%20Menu%20final%20October.pdf"
-      target="_blank"
-      rel="noopener"
-      aria-label="Open the Pocky menu PDF"
-    >MENU</a>
- <div class="subheading">ORDER TAKEAWAY ONLINE<BR>FRI - SUN LUNCH FROM 11:30am<br>WED - SUN DINNER FROM 4:15pm<p>Subject to availability.<br>During busy periods, online ordering may become unavailable.
-  <div class="cta-group">
-    <a
-      class="notify-btn"
-      href="https://pocky-asian-restaurant.square.site/"
-      target="_blank"
-      rel="noopener"
-      aria-label="Order Pocky online"
-    >ORDER ONLINE</a>
-
-  </div>
-      Walk-in takeaway orders are welcomed.<BR>Allow up to 30 minutes wait time.
- </div>
-     
-    <button class="notify-btn" onclick="openModal()" aria-haspopup="dialog" aria-controls="modal">
-      KEEP ME UPDATED
-    </button>
-  </div>
-
-  <div class="social-icons">
-    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank" rel="noopener">
-      <img src="IGLogo.jpg" alt="Instagram" />
+  <div class="page-grid">
+    <!-- MENU (Yellow) -->
+    <a class="tile tile--menu"
+       href="#menu-modal"
+       data-modal-target="menu-modal">
+      <!-- Replace with your actual file path -->
+      <img src="images/icon-menu.svg" alt="Menu" />
     </a>
-    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank" rel="noopener">
-      <img src="FBLogo.jpg" alt="Facebook" />
+
+    <!-- ORDER (Pink) -->
+    <a class="tile tile--order"
+       href="https://your-online-ordering-link.example"
+       target="_blank" rel="noopener">
+      <img src="images/icon-order.svg" alt="Order online" />
     </a>
-  </div>
 
-  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="close-btn" onclick="closeModal()" aria-label="Close">✕</div>
-
-    <!-- Updated modal heading -->
-    <h2 id="modalTitle" style="margin: 0 2rem;">Keep me updated on Pocky Asian Restaurant</h2>
-
-    <form name="Subscribers" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="notifyForm">
-      <input type="hidden" name="form-name" value="Subscribers" />
-      <p hidden>
-        <label>Don’t fill this out: <input name="bot-field" /></label>
-      </p>
-      <div class="form-field">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" placeholder="Name" required />
-      </div>
-      <div class="form-field">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Email" required />
-      </div>
-      <div class="form-field">
-        <label for="postcode">Postcode</label>
-        <input type="text" name="postcode" id="postcode" placeholder="Postcode" required />
-      </div>
-      <p>
-        <button type="submit" class="submit-btn">SUBMIT</button>
-      </p>
-      <div class="error" id="error"></div>
-    </form>
-
-    <div class="thank-you" id="thankYouMessage">Thank you for signing up. We'll be in touch soon.</div>
-    <p style="margin: 2rem 2rem; max-width: 400px; font-size: 1.0rem;">
-      By hitting submit, you're joining our mailing list. We’ll keep you in the loop with menu updates, special events, and launch news – no spam, just the good stuff. You can unsubscribe anytime, and we won't share your details with anyone else.
-    </p>
-    <div class="modal-footer-logo">
-      <img src="POCKY_Logo_H_REV.png" alt="Pocky Logo Reverse">
+    <!-- CENTRAL LOGO BAND -->
+    <div class="logo-band">
+      <!-- Replace with your logo file path -->
+      <img src="images/pocky-logo.svg" alt="Pocky Asian Restaurant" />
     </div>
+
+    <!-- GIFT (Red) -->
+    <a class="tile tile--gift"
+       href="#gift-modal"
+       data-modal-target="gift-modal">
+      <img src="images/icon-gift.svg" alt="Gift vouchers" />
+    </a>
+
+    <!-- UPDATE (White) -->
+    <a class="tile tile--update"
+       href="#updates-modal"
+       data-modal-target="updates-modal">
+      <img src="images/icon-update.svg" alt="Updates" />
+    </a>
+
+    <!-- FOOTER -->
+    <footer class="footer-bar">
+      <div class="footer-text">
+        Shop 1, 4 Maple Street, Maleny<br />
+        Dinner: Wed – Sun, 4:30pm – late<br />
+        Lunch: Fri – Sun, 11:30am – 2:30pm
+      </div>
+
+      <a class="footer-contact" href="mailto:hello@pocky.example">
+        <span>Contact</span>
+        <span class="footer-contact-badge">Us</span>
+      </a>
+    </footer>
   </div>
 
-  <script>
-    const modal = document.getElementById('modal');
+  <!-- OPTIONAL: modal shells -->
+  <!--
+  <div id="menu-modal" hidden>…</div>
+  <div id="gift-modal" hidden>…</div>
+  <div id="updates-modal" hidden>…</div>
+  -->
 
-    function openModal() {
-      modal.style.display = 'flex';
-      requestAnimationFrame(() => {
-        modal.style.opacity = '1';
-        modal.style.visibility = 'visible';
-      });
-    }
-
-    function closeModal() {
-      modal.style.opacity = '0';
-      modal.style.visibility = 'hidden';
-      setTimeout(() => {
-        modal.style.display = 'none';
-      }, 500);
-    }
-
-    document.getElementById('notifyForm').addEventListener('submit', function (e) {
-      const form = e.target;
-      const name = form.elements['name'].value.trim();
-      const email = form.elements['email'].value.trim();
-      const postcode = form.elements['postcode'].value.trim();
-      const error = document.getElementById('error');
-
-      if (!name || !email || !postcode) {
-        e.preventDefault();
-        error.textContent = 'All fields are required.';
-        return;
-      }
-
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-        e.preventDefault();
-        error.textContent = 'Please enter a valid email address.';
-        return;
-      }
-
-      // No preventDefault here — let the form submit to Netlify
-      error.textContent = '';
-    });
-  </script>
 </body>
-
-<div class="footer-address">
-  Shop 1, 4 Maple Street, Maleny QLD
-  <br>>Wed - Sun, 4:30pm - late | Fri - Sun, 11:30am - 2:30pm
-</div>
 </html>
