@@ -366,6 +366,35 @@
   }
 }
 
+.footer-socials {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.footer-socials img {
+  width: 24px;
+  height: 24px;
+}
+
+/* 모바일 layout */
+@media (max-width: 900px) {
+  .footer-bar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .footer-contact {
+    order: 1;
+  }
+
+  .footer-socials {
+    order: 2;
+    justify-content: center;
+  }
+}
 
 
     
@@ -442,19 +471,30 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
 </a>
 
     <!-- FOOTER -->
-    <footer class="footer-bar">
-      <div class="footer-text">
-        Shop 1, 4 Maple Street, Maleny<br />
-        Dinner: Wed – Sun, 4:30pm – late<br />
-        Lunch: Fri – Sun, 11:30am – 2:30pm
-      </div>
+  <footer class="footer-bar">
 
-   <a class="footer-contact" href="#" id="emailLink">
-  <span>Contact</span>
-  <span class="footer-contact-badge">Us</span>
-</a>
+  <div class="footer-text">
+    Shop 1, 4 Maple Street, Maleny |
+    Dinner: Wed – Sun, 4:30pm – late |
+    Lunch: Fri – Sun, 11:30am – 2:30pm
+  </div>
 
-    </footer>
+  <!-- Social icons (desktop left) -->
+  <div class="footer-socials">
+    <a href="https://www.instagram.com/pockyasianrestaurant/" target="_blank" rel="noopener">
+      <img src="images/instagram.svg" alt="Instagram" />
+    </a>
+    <a href="https://www.facebook.com/pockyasianrestaurant" target="_blank" rel="noopener">
+      <img src="images/facebook.svg" alt="Facebook" />
+    </a>
+  </div>
+
+  <a class="footer-contact" href="#" id="emailLink">
+    <span>Contact</span>
+    <span class="footer-contact-badge">Us</span>
+  </a>
+
+</footer>
   </div>
 
   <!-- OPTIONAL: modal shells -->
