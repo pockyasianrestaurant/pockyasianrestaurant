@@ -123,11 +123,10 @@
 }
 
 
-    .tile img {
-      max-width: 30%;
-      height: auto;
-      display: block;
-    }
+.tile img {
+  width: clamp(120px, 18vw, 180px);
+  max-width: 100%;
+}
 
     .tile--menu   { grid-area: menu;   background: var(--pocky-yellow); }
     .tile--order  { grid-area: order;  background: var(--pocky-pink);   }
@@ -249,9 +248,9 @@
         padding: 3.5rem 1.5rem;
       }
 
-      .tile img {
-        max-width: 55%;
-      }
+.tile img {
+  width: clamp(100px, 40vw, 160px);
+}
 
       .footer-bar {
         flex-direction: column;
