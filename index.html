@@ -123,11 +123,11 @@
 }
 
 
-    .tile img {
-      max-width: 20%;
-      height: auto;
-      display: block;
-    }
+.tile img {
+  width: clamp(130px, 18vw, 300px);
+  max-width: 100%;
+}
+
 
     .tile--menu   { grid-area: menu;   background: var(--pocky-yellow); }
     .tile--order  { grid-area: order;  background: var(--pocky-pink);   }
