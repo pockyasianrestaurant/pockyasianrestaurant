@@ -38,11 +38,13 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows:
     auto
+    auto
     minmax(260px, 1.1fr)
     minmax(260px, 1.1fr)
     auto;
   grid-template-areas:
     "topbar topbar"
+    "mothers mothers"
     "menu order"
     "gift update"
     "footer footer";
@@ -108,6 +110,33 @@
   outline-offset: 3px;
 }
 
+/* ========= MOTHER'S DAY BANNER ========= */
+
+.mothers-day-banner {
+  grid-area: mothers;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pocky-pink);
+  color: var(--pocky-white);
+  text-decoration: none;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.25rem;
+  text-align: center;
+}
+
+.mothers-day-banner:hover,
+.mothers-day-banner:focus-visible {
+  filter: brightness(1.03);
+}
+
+.mothers-day-banner:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
     
     /* ========= TILES ========= */
 
@@ -130,8 +159,8 @@
 
 
     .tile--menu   { grid-area: menu;   background: var(--pocky-yellow); }
-    .tile--order  { grid-area: order;  background: var(--pocky-pink);   }
-    .tile--gift   { grid-area: gift;   background: var(--pocky-red);    }
+    .tile--order  { grid-area: order;  background: var(--pocky-red);    }
+    .tile--gift   { grid-area: gift;   background: var(--pocky-pink);   }
     .tile--update { grid-area: update; background: var(--pocky-white);  }
 
     .tile:hover,
@@ -144,52 +173,112 @@
       outline: 2px solid #000;
       outline-offset: 3px;
     }
-/* ORDER tile hover overlay (desktop) */
+/* ORDER tile info button */
 
-/* ORDER tile hover overlay */
+.tile--order {
+  position: relative;
+}
 
-.tile-overlay {
+.order-tile-link {
   position: absolute;
   inset: 0;
-  background: rgba(237, 0, 140, 0.8); /* same pink, 50% opacity */
-  color: #ffffff;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 1.5rem;
+  text-decoration: none;
+  color: var(--pocky-white);
+  z-index: 1;
+}
+
+.tile-word {
+  font-size: clamp(3.8rem, 10vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--pocky-white);
+}
+
+.tile--gift .tile-word {
+  color: var(--pocky-red);
+}
+
+.order-info-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 2px solid var(--pocky-white);
+  background: transparent;
+  color: var(--pocky-white);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.order-info-btn:hover,
+.order-info-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.order-info-btn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 3px;
+}
+
+.order-info-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2500;
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; /* lets clicks pass through to the <a> */
-  transition: opacity 150ms ease-out, visibility 150ms ease-out;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
-.tile-overlay-content {
-  max-width: 420px;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-/* visual "Order" button inside overlay */
-.tile-overlay-btn {
-  margin-top: 1.5rem;
-  padding: 0.6rem 1.6rem;
-  border: 1px solid #ffffff;
-  border-radius: 999px;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-}
-
-/* show overlay on hover/focus (desktop) and when JS marks it as open */
-.tile--order:hover .tile-overlay,
-.tile--order:focus-visible .tile-overlay,
-.tile--order.is-open .tile-overlay {
+.order-info-modal-overlay.is-open {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
+.order-info-modal {
+  position: relative;
+  width: min(90vw, 520px);
+  background: var(--pocky-red);
+  color: var(--pocky-white);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+  line-height: 1.45;
+  font-size: 1rem;
+}
+
+.order-info-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--pocky-white);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.order-info-modal-close:hover {
+  opacity: 0.75;
+}
 
     /* ========= FOOTER ========= */
 
@@ -244,7 +333,7 @@
 
     /* ========= MOBILE / TABLET ========= */
 
- 
+    @media (max-width: 900px) {
       .tile {
         padding: 3.5rem 1.5rem;
       }
@@ -413,85 +502,6 @@
   }
 }
 
-/* ===== HOURS POPUP ===== */
-
-.hours-popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.hours-popup {
-  position: relative;
-  width: 30vw;
-  max-width: 520px;
-  min-width: 320px;
-  background: var(--pocky-yellow);
-  color: #000000;
-  padding: 2.5rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 260px;
-}
-
-.hours-popup-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  line-height: 1.4;
-  font-size: 1.1rem;
-}
-
-.hours-popup-content strong {
-  font-weight: 700;
-}
-
-.hours-popup-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.9rem;
-  background: none;
-  border: none;
-  color: #000000;
-  font-size: 1.8rem;
-  line-height: 1;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.hours-popup-close:hover {
-  opacity: 0.7;
-}
-
-@media (max-width: 900px) {
-  .hours-popup {
-    width: 50vw;
-    min-width: 280px;
-    min-height: 220px;
-    padding: 2rem 1.5rem;
-  }
-
-  .hours-popup-content {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .hours-popup {
-    width: 50vw;
-    min-width: 260px;
-    padding: 1.75rem 1rem;
-  }
-}
-
     /* ===== RESERVATIONS POPUP ===== */
 
 .reservations-modal-overlay {
@@ -549,6 +559,7 @@
     grid-template-columns: 1fr;
     grid-template-rows:
       auto
+      auto
       minmax(220px, 1fr)
       minmax(220px, 1fr)
       minmax(220px, 1fr)
@@ -556,6 +567,7 @@
       auto;
     grid-template-areas:
       "topbar"
+      "mothers"
       "menu"
       "order"
       "gift"
@@ -628,18 +640,6 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
-<div id="hoursPopupOverlay" class="hours-popup-overlay">
-  <div class="hours-popup" role="dialog" aria-modal="true" aria-labelledby="hoursPopupTitle">
-    <button class="hours-popup-close" id="hoursPopupClose" aria-label="Close popup">✕</button>
-
-    <div class="hours-popup-content">
-      <strong id="hoursPopupTitle">Updated hours:</strong>
-      <div>Wed to Sun: 4:30pm to late</div>
-      <div>Fri and Sun: 11:30am to 2:30pm</div>
-      <div>Closed for lunch on Saturdays.</div>
-    </div>
-  </div>
-</div>
   <div class="page-grid">
         <!-- TOP BANNER -->
     <div class="top-banner">
@@ -658,6 +658,12 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
         </button>
       </div>
     </div>
+
+    <!-- MOTHER'S DAY BANNER -->
+    <a class="mothers-day-banner" href="mothers-day.html" target="_blank" rel="noopener">
+      Book for Mother's Day
+    </a>
+
     <!-- MENU (Yellow) -->
     <a class="tile tile--menu"
        href="POCKY MENU 28_2_26.pdf"
@@ -666,32 +672,30 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
       <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-menu.svg" alt="Menu" />
     </a>
 
-    <!-- ORDER (Pink) -->
- <a class="tile tile--order"
-   href="https://pocky-asian-restaurant.square.site/"
-   target="_blank" rel="noopener">
-  <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-order.svg" alt="Order online" />
+    <!-- ORDER (Red) -->
+    <div class="tile tile--order">
+      <a class="order-tile-link"
+         href="https://pocky-asian-restaurant.square.site/"
+         target="_blank" rel="noopener"
+         aria-label="Order online">
+        <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/9fd8ae3122eb8e8b01395f17cbe87540176db8b1/icon-order-mum.svg" alt="Order online" />
+      </a>
 
-  <!-- Hover overlay -->
-  <div class="tile-overlay">
-    <div class="tile-overlay-content">
-      <strong>LUNCH:</strong> Friday and Sunday, 11:30am - 2:30pm (Closed Saturday Lunch)<br><br>
-      <strong>DINNER:</strong> Wednesday to Sunday FROM 4:30pm<br><br>
-      Subject to availability.<br>
-      During busy periods, online ordering may become unavailable.<br><br>
-      Walk-in takeaway orders are welcomed.<br>
-      Allow up to 30 minutes wait time.
+      <button
+        class="order-info-btn"
+        type="button"
+        onclick="openOrderInfoModal()"
+        aria-label="Online ordering information"
+        aria-haspopup="dialog"
+        aria-controls="orderInfoModalOverlay">i</button>
     </div>
 
-    <div class="tile-overlay-btn">Order Online</div>
-  </div>
-</a>
-
-    <!-- GIFT (Red) -->
+    <!-- MUM / GIFT VOUCHERS (Pink) -->
     <a class="tile tile--gift"
        href="https://app.squareup.com/gift/MLVB6NCJR90DD/order"
-       data-modal-target="gift-modal">
-      <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-gift.svg" alt="Gift vouchers" />
+       target="_blank" rel="noopener"
+       aria-label="Mum gift vouchers">
+      <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/38c8514fb3440112f55a4af0be6092553e3d21b3/icon-gift-mum.svg" alt="Mum gift vouchers" />
     </a>
 
     <!-- UPDATE (White) -->
@@ -738,6 +742,33 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
   <div id="updates-modal" hidden>…</div>
   -->
 <!-- Keep me updated modal -->
+
+<!-- Order information modal -->
+<div
+  id="orderInfoModalOverlay"
+  class="order-info-modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="orderInfoModalTitle">
+
+  <div class="order-info-modal">
+    <button
+      class="order-info-modal-close"
+      type="button"
+      onclick="closeOrderInfoModal()"
+      aria-label="Close online ordering information">✕</button>
+
+    <div class="order-info-modal-body">
+      <strong id="orderInfoModalTitle">Online ordering information</strong><br><br>
+      <strong>LUNCH:</strong> Friday and Sunday, 11:30am - 2:30pm (Closed Saturday Lunch)<br><br>
+      <strong>DINNER:</strong> Wednesday to Sunday from 4:30pm<br><br>
+      Subject to availability.<br>
+      During busy periods, online ordering may become unavailable.<br><br>
+      Walk-in takeaway orders are welcomed.<br>
+      Allow up to 30 minutes wait time.
+    </div>
+  </div>
+</div>
   <!-- Reservations modal -->
 <div
   id="reservationsModalOverlay"
@@ -882,20 +913,28 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
     error.textContent = '';
   });
 
-  // Mobile behaviour for ORDER tile: first tap shows overlay, second tap follows link
-  const orderTile = document.querySelector('.tile--order');
+  const orderInfoModalOverlay = document.getElementById('orderInfoModalOverlay');
 
-  if (orderTile) {
-    orderTile.addEventListener('click', function (e) {
-      const isMobile = window.matchMedia('(max-width: 900px)').matches;
+  function openOrderInfoModal() {
+    orderInfoModalOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
 
-      if (isMobile && !orderTile.classList.contains('is-open')) {
-        // First tap on mobile: just open overlay, don't navigate yet
-        e.preventDefault();
-        orderTile.classList.add('is-open');
-      } else {
-        // Desktop click, or second tap on mobile: allow normal navigation
-        orderTile.classList.remove('is-open');
+  function closeOrderInfoModal() {
+    orderInfoModalOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  if (orderInfoModalOverlay) {
+    orderInfoModalOverlay.addEventListener('click', function (e) {
+      if (e.target === orderInfoModalOverlay) {
+        closeOrderInfoModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && orderInfoModalOverlay.classList.contains('is-open')) {
+        closeOrderInfoModal();
       }
     });
   }
@@ -906,20 +945,6 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
     const domain = "pockyasianrestaurant.com.au";
     window.location.href = "mailto:" + user + "@" + domain;
   });
-    const hoursPopupOverlay = document.getElementById('hoursPopupOverlay');
-  const hoursPopupClose = document.getElementById('hoursPopupClose');
-
-  if (hoursPopupClose && hoursPopupOverlay) {
-    hoursPopupClose.addEventListener('click', function () {
-      hoursPopupOverlay.style.display = 'none';
-    });
-
-    hoursPopupOverlay.addEventListener('click', function (e) {
-      if (e.target === hoursPopupOverlay) {
-        hoursPopupOverlay.style.display = 'none';
-      }
-    });
-  }
 </script>
 
 
