@@ -131,7 +131,14 @@
 }
 
 
-    .tile--menu   { grid-area: menu;   background: var(--pocky-yellow); }
+    .tile--menu   {
+      grid-area: menu;
+      background: var(--pocky-yellow);
+      border: none;
+      width: 100%;
+      font-family: inherit;
+      cursor: pointer;
+    }
     .tile--order  { grid-area: order;  background: var(--pocky-red);    }
     .tile--gift   { grid-area: gift;   background: var(--pocky-pink);   }
     .tile--update { grid-area: update; background: var(--pocky-white);  }
@@ -251,6 +258,103 @@
 
 .order-info-modal-close:hover {
   opacity: 0.75;
+}
+
+/* MENU SELECTION MODAL */
+
+.menu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2600;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.menu-modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.menu-modal {
+  position: relative;
+  width: min(90vw, 520px);
+  background: var(--pocky-yellow);
+  color: var(--text-dark);
+  padding: 4rem 2rem 2.5rem;
+  text-align: center;
+}
+
+.menu-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.menu-modal-close:hover,
+.menu-modal-close:focus-visible {
+  opacity: 0.7;
+}
+
+.menu-modal-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.menu-modal-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+  padding: 1.25rem;
+  background: var(--pocky-white);
+  color: var(--text-dark);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  transition: transform 120ms ease-out, filter 120ms ease-out;
+}
+
+.menu-modal-option:hover,
+.menu-modal-option:focus-visible {
+  filter: brightness(0.97);
+  transform: translateY(-2px);
+}
+
+.menu-modal-option:focus-visible,
+.menu-modal-close:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .menu-modal {
+    padding: 3.75rem 1.25rem 1.5rem;
+  }
+
+  .menu-modal-options {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-modal-option {
+    min-height: 90px;
+  }
 }
 
     /* ========= FOOTER ========= */
@@ -634,12 +738,15 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
 
  
     <!-- MENU (Yellow) -->
-    <a class="tile tile--menu"
-       href="POCKY_MENU_July_2026.pdf"
-       data-modal-target="menu-modal">
-      <!-- Replace with your actual file path -->
+    <button
+      class="tile tile--menu"
+      type="button"
+      onclick="openMenuModal()"
+      aria-haspopup="dialog"
+      aria-controls="menuModalOverlay"
+      aria-label="Choose a menu">
       <img src="https://raw.githubusercontent.com/pockyasianrestaurant/pockyasianrestaurant/refs/heads/images/icon-menu.svg" alt="Menu" />
-    </a>
+    </button>
 
     <!-- ORDER (Red) -->
     <div class="tile tile--order">
@@ -711,6 +818,30 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
   <div id="updates-modal" hidden>…</div>
   -->
 <!-- Keep me updated modal -->
+
+<!-- Menu selection modal -->
+<div
+  id="menuModalOverlay"
+  class="menu-modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="menuModalTitle">
+
+  <div class="menu-modal">
+    <button
+      class="menu-modal-close"
+      type="button"
+      onclick="closeMenuModal()"
+      aria-label="Close menu selection">✕</button>
+
+    <h2 id="menuModalTitle" style="position:absolute;left:-9999px;">Choose a menu</h2>
+
+    <div class="menu-modal-options">
+      <a class="menu-modal-option" href="POCKY_MENU_July_2026.pdf">Menu</a>
+      <a class="menu-modal-option" href="POCKY_KIDSMENU_July_2026.pdf">Kids Menu</a>
+    </div>
+  </div>
+</div>
 
 <!-- Order information modal -->
 <div
@@ -881,6 +1012,32 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
     // allow Netlify submission
     error.textContent = '';
   });
+
+  const menuModalOverlay = document.getElementById('menuModalOverlay');
+
+  function openMenuModal() {
+    menuModalOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenuModal() {
+    menuModalOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  if (menuModalOverlay) {
+    menuModalOverlay.addEventListener('click', function (e) {
+      if (e.target === menuModalOverlay) {
+        closeMenuModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menuModalOverlay.classList.contains('is-open')) {
+        closeMenuModal();
+      }
+    });
+  }
 
   const orderInfoModalOverlay = document.getElementById('orderInfoModalOverlay');
 
