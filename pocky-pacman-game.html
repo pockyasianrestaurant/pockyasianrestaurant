@@ -6,22 +6,23 @@
   <title>Pocky Maze</title>
   <style>
     :root {
-      --bg: #121212;
-      --panel: #1c1c1c;
-      --wall: #c62828;
-      --wall-edge: #ef5350;
-      --pellet: #ffd54f;
-      --power: #fff176;
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --wall: #f55b91;
+      --wall-edge: #d93f76;
+      --pellet: #e42420;
+      --power: #e42420;
       --player: #ffca28;
-      --ghost1: #ef5350;
-      --ghost2: #29b6f6;
-      --ghost3: #ab47bc;
-      --text: #fff8e1;
-      --muted: #d7ccc8;
-      --btn: #2b2b2b;
-      --btn-active: #3a3a3a;
+      --ghost1: #ff8a00;
+      --ghost2: #ff00a8;
+      --ghost3: #00cfc8;
+      --ghost4: #72ff00;
+      --text: #171717;
+      --muted: #6f6570;
+      --btn: #f8e3ec;
+      --btn-active: #f2cadb;
       --radius: 18px;
-      --shadow: 0 14px 38px rgba(0,0,0,.32);
+      --shadow: 0 14px 38px rgba(91, 39, 63, .14);
       --maxw: 520px;
     }
 
@@ -29,7 +30,7 @@
     html, body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at top, #2b1b1b, var(--bg) 45%);
+      background: var(--bg);
       color: var(--text);
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100%;
@@ -48,8 +49,8 @@
     }
 
     .panel {
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border: 1px solid rgba(255,255,255,.08);
+      background: var(--panel);
+      border: 1px solid #f0d6e1;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -87,7 +88,7 @@
     }
 
     .stat {
-      background: rgba(255,255,255,.04);
+      background: #fbf2f6;
       border-radius: 12px;
       padding: 8px 10px;
       min-width: 72px;
@@ -110,9 +111,9 @@
       width: 100%;
       height: auto;
       display: block;
-      background: #0b0b0b;
+      background: #ffffff;
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.08);
+      border: 1px solid #f0d6e1;
       touch-action: none;
     }
 
@@ -144,7 +145,7 @@
       min-height: 56px;
       font-size: 1rem;
       font-weight: 700;
-      box-shadow: inset 0 -2px 0 rgba(255,255,255,.04);
+      box-shadow: inset 0 -2px 0 rgba(217,63,118,.08);
     }
 
     .control-btn:active,
@@ -168,6 +169,7 @@
       min-height: 50px;
       min-width: 140px;
       background: var(--wall);
+      color: #ffffff;
     }
 
     .hint {
@@ -194,8 +196,8 @@
     }
 
     .message {
-      background: rgba(18,18,18,.88);
-      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.92);
+      border: 1px solid #f0d6e1;
       border-radius: 18px;
       padding: 16px 18px;
       backdrop-filter: blur(8px);
@@ -292,8 +294,8 @@
     const EMPTY = 2;
     const POWER = 3;
 
-    const SPEED = 200;
-    const GHOST_SPEED = 225;
+    const GHOST_SPEED = 195;
+    const SPEED = 175 / 1.10; // Pacman is 10% faster than in the previous build
     const FRIGHTENED_MS = 5500;
 
     const baseMap = [
@@ -346,9 +348,13 @@
     }
 
     function resetEntities() {
+      const now = performance.now();
       player = {
         row: 11,
         col: 7,
+        prevRow: 11,
+        prevCol: 7,
+        moveStartedAt: now,
         dir: 'left',
         nextDir: 'left',
         mouth: 0.18,
@@ -356,9 +362,10 @@
       };
 
       ghosts = [
-        { row: 7, col: 7, dir: 'up', color: getCss('--ghost1'), home: {row: 7, col: 7} },
-        { row: 7, col: 6, dir: 'left', color: getCss('--ghost2'), home: {row: 7, col: 6} },
-        { row: 7, col: 8, dir: 'right', color: getCss('--ghost3'), home: {row: 7, col: 8} },
+        { row: 7, col: 7, prevRow: 7, prevCol: 7, moveStartedAt: now, dir: 'up', color: getCss('--ghost1'), home: {row: 7, col: 7} },
+        { row: 7, col: 6, prevRow: 7, prevCol: 6, moveStartedAt: now, dir: 'left', color: getCss('--ghost2'), home: {row: 7, col: 6} },
+        { row: 7, col: 8, prevRow: 7, prevCol: 8, moveStartedAt: now, dir: 'right', color: getCss('--ghost3'), home: {row: 7, col: 8} },
+        { row: 6, col: 7, prevRow: 6, prevCol: 7, moveStartedAt: now, dir: 'down', color: getCss('--ghost4'), home: {row: 6, col: 7} },
       ];
     }
 
@@ -375,6 +382,9 @@
       started = false;
       running = false;
       resetEntities();
+      const now = performance.now();
+      lastMoveTime = now;
+      lastGhostMove = now;
       updateStats();
       showMessage('Tap to start', 'Clear the board, grab chilli boosts, and stay away from the ghosts.');
       draw();
@@ -458,6 +468,9 @@
             score += 200;
             ghost.row = ghost.home.row;
             ghost.col = ghost.home.col;
+            ghost.prevRow = ghost.home.row;
+            ghost.prevCol = ghost.home.col;
+            ghost.moveStartedAt = performance.now();
             ghost.dir = 'up';
             updateStats();
           } else {
@@ -476,7 +489,7 @@
       }
     }
 
-    function movePlayer() {
+    function movePlayer(timestamp) {
       const desired = nextCell(player.row, player.col, player.nextDir);
       if (canMove(desired.row, desired.col)) {
         player.dir = player.nextDir;
@@ -484,8 +497,11 @@
 
       const next = nextCell(player.row, player.col, player.dir);
       if (canMove(next.row, next.col)) {
+        player.prevRow = player.row;
+        player.prevCol = player.col;
         player.row = next.row;
         player.col = next.col;
+        player.moveStartedAt = timestamp;
         collectAtPlayer();
         checkCollisions();
       }
@@ -509,7 +525,7 @@
       return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
     }
 
-    function moveGhost(ghost) {
+    function moveGhost(ghost, timestamp) {
       const options = getOptions(ghost.row, ghost.col, ghost.dir);
       const frightened = performance.now() < frightenedUntil;
 
@@ -530,9 +546,20 @@
       ghost.dir = chosen;
       const next = nextCell(ghost.row, ghost.col, chosen);
       if (canMove(next.row, next.col)) {
+        ghost.prevRow = ghost.row;
+        ghost.prevCol = ghost.col;
         ghost.row = next.row;
         ghost.col = next.col;
+        ghost.moveStartedAt = timestamp;
       }
+    }
+
+    function getRenderPosition(entity, timestamp, duration) {
+      const progress = Math.min(1, Math.max(0, (timestamp - entity.moveStartedAt) / duration));
+      return {
+        row: entity.prevRow + (entity.row - entity.prevRow) * progress,
+        col: entity.prevCol + (entity.col - entity.prevCol) * progress,
+      };
     }
 
     function drawBoard() {
@@ -550,7 +577,7 @@
             ctx.lineWidth = 1.5;
             roundRect(ctx, x + 4, y + 4, TILE - 8, TILE - 8, 5, false, true);
           } else {
-            ctx.fillStyle = '#111';
+            ctx.fillStyle = '#fff';
             ctx.fillRect(x, y, TILE, TILE);
             if (tile === PELLET) {
               ctx.fillStyle = getCss('--pellet');
@@ -568,9 +595,10 @@
       }
     }
 
-    function drawPlayer() {
-      const cx = player.col * TILE + TILE / 2;
-      const cy = player.row * TILE + TILE / 2;
+    function drawPlayer(timestamp) {
+      const position = getRenderPosition(player, timestamp, SPEED);
+      const cx = position.col * TILE + TILE / 2;
+      const cy = position.row * TILE + TILE / 2;
       const radius = TILE * 0.38;
 
       if (player.mouthClosing) player.mouth -= 0.015;
@@ -590,10 +618,11 @@
       ctx.restore();
     }
 
-    function drawGhost(ghost) {
-      const frightened = performance.now() < frightenedUntil;
-      const x = ghost.col * TILE + TILE / 2;
-      const y = ghost.row * TILE + TILE / 2 + 1;
+    function drawGhost(ghost, timestamp) {
+      const frightened = timestamp < frightenedUntil;
+      const position = getRenderPosition(ghost, timestamp, GHOST_SPEED);
+      const x = position.col * TILE + TILE / 2;
+      const y = position.row * TILE + TILE / 2 + 1;
       const color = frightened ? '#5c6bc0' : ghost.color;
       const r = TILE * 0.34;
 
@@ -640,27 +669,27 @@
       if (stroke) ctx.stroke();
     }
 
-    function draw() {
+    function draw(timestamp = performance.now()) {
       drawBoard();
-      drawPlayer();
-      ghosts.forEach(drawGhost);
+      drawPlayer(timestamp);
+      ghosts.forEach(ghost => drawGhost(ghost, timestamp));
     }
 
     function gameLoop(timestamp) {
       if (running && !gameOver && !win) {
         if (timestamp - lastMoveTime >= SPEED) {
-          movePlayer();
+          movePlayer(timestamp);
           lastMoveTime = timestamp;
         }
 
         if (timestamp - lastGhostMove >= GHOST_SPEED) {
-          ghosts.forEach(moveGhost);
+          ghosts.forEach(ghost => moveGhost(ghost, timestamp));
           checkCollisions();
           lastGhostMove = timestamp;
         }
       }
 
-      draw();
+      draw(timestamp);
       requestAnimationFrame(gameLoop);
     }
 
