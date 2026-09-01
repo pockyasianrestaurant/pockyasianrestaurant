@@ -110,6 +110,37 @@
   outline-offset: 3px;
 }
 
+    /* ========= FATHER'S DAY BANNER ========= */
+
+.fathers-day-banner {
+  grid-area: mothers;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pocky-red);
+  color: var(--pocky-white);
+  border: none;
+  width: 100%;
+  font-family: var(--font-main);
+  text-decoration: none;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.fathers-day-banner:hover,
+.fathers-day-banner:focus-visible {
+  filter: brightness(1.03);
+}
+
+.fathers-day-banner:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
    
     /* ========= TILES ========= */
 
@@ -696,6 +727,61 @@
     padding: 1rem 1rem 0.85rem;
   }
 }
+
+/* ========= FATHER'S DAY POPUP ========= */
+
+.fathers-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4000;
+}
+
+.fathers-popup {
+  position: relative;
+  width: min(90vw, 520px);
+  background: var(--pocky-red);
+  color: var(--pocky-white);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+}
+
+.fathers-popup h2 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.fathers-popup p {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.fathers-popup-book {
+  background: var(--pocky-white);
+  color: var(--pocky-red);
+  border: none;
+  padding: 0.9rem 1.6rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fathers-popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  border: none;
+  background: none;
+  color: var(--pocky-white);
+  font-size: 1.8rem;
+  cursor: pointer;
+}
     
   </style>
     <!-- Meta Pixel Code -->
@@ -717,6 +803,39 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 </head>
 <body>
+
+  <!-- FATHER'S DAY POPUP -->
+<div id="fathersPopupOverlay" class="fathers-popup-overlay">
+  <div
+    class="fathers-popup"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="fathersPopupTitle">
+
+    <button
+      class="fathers-popup-close"
+      type="button"
+      onclick="closeFathersPopup()"
+      aria-label="Close Father's Day popup">✕</button>
+
+    <h2 id="fathersPopupTitle">Father's Day</h2>
+
+    <p>
+      Father's Day is this Sunday, 6 September.<br>
+      Book your table at Pocky for lunch or dinner.
+    </p>
+
+    <button
+      class="fathers-popup-book"
+      type="button"
+      onclick="bookFathersDay()">
+      Book Now
+    </button>
+
+  </div>
+</div>
+
+  
   <div class="page-grid">
         <!-- TOP BANNER -->
     <div class="top-banner">
@@ -736,7 +855,15 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
       </div>
     </div>
 
- 
+ <!-- FATHER'S DAY BANNER -->
+<button
+  class="fathers-day-banner"
+  type="button"
+  onclick="openReservationsModal()">
+  Book for Father's Day this Sunday
+</button>
+
+    
     <!-- MENU (Yellow) -->
     <button
       class="tile tile--menu"
@@ -1071,6 +1198,32 @@ src="https://www.facebook.com/tr?id=2065032040919475&ev=PageView&noscript=1"
     const domain = "pockyasianrestaurant.com.au";
     window.location.href = "mailto:" + user + "@" + domain;
   });
+
+  const fathersPopupOverlay = document.getElementById('fathersPopupOverlay');
+
+function closeFathersPopup() {
+  fathersPopupOverlay.style.display = 'none';
+}
+
+function bookFathersDay() {
+  closeFathersPopup();
+  openReservationsModal();
+}
+
+if (fathersPopupOverlay) {
+  fathersPopupOverlay.addEventListener('click', function (e) {
+    if (e.target === fathersPopupOverlay) {
+      closeFathersPopup();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeFathersPopup();
+    }
+  });
+}
+  
 </script>
 
 
