@@ -9,8 +9,10 @@ async function openEditor(){
  user=await getUser();$('#login-panel').hidden=!!user;$('#logout').hidden=!user;$('#editor').hidden=true;
  if(!user){status('');return;}
  if(!user.roles?.includes('content-editor')){status('Your account needs content editor access. Ask your website designer to assign the content-editor role.',true);return;}
- try{const data=await api();content=data.content;version=data.version;dirty=false;$('#session-email').textContent=user.email;fill();$('#editor').hidden=false;status('Ready. Changes go live when you publish.');}catch(e){status(e.message,true);}
+ try{const data=await api();content=data.content;version=data.version;dirty=false;$('#session-email').textContent=user.email;fill();$('#history-tab').hidden=user.id!==auditorID;$('#editor').hidden=false;status('Ready. Changes go live when you publish.');}catch(e){status(e.message,true);}
 }
+const auditorID='04e28a21-e1e1-4675-9a9c-c2f21abcd47e';
+let historyEvents=[],uploadEvents=[],historyNext=null;
 function fill(){document.querySelectorAll('[data-field]').forEach(el=>{el.value=content[el.dataset.field];});menuLinks();renderCards();$('#save-state').textContent='All changes published';}
 function menuLinks(){$('#menu-link').href=content.menu;$('#kids-menu-link').href=content.kidsMenu;}
 function field(card,label,key,a,{type='text',max=800}={}){const id=`${key}-${a.id}`,l=document.createElement('label'),input=document.createElement(type==='textarea'?'textarea':'input');l.htmlFor=id;l.textContent=label;input.id=id;if(type!=='textarea')input.type=type;input.maxLength=max;input.value=type==='datetime-local'?a[key]?.slice(0,16)||'':a[key];input.addEventListener('input',()=>{a[key]=type==='datetime-local'?(input.value?input.value+':00+10:00':''):input.value;changed();});card.append(l,input);return input;}
@@ -35,7 +37,7 @@ function add(template){
 }
 $('#add-announcement').onclick=()=>add();document.querySelectorAll('[data-template]').forEach(b=>b.onclick=()=>add(b.dataset.template));
 document.querySelectorAll('[data-field]').forEach(el=>el.addEventListener('input',()=>{content[el.dataset.field]=el.value;changed();}));
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-current',String(x===b)));document.querySelectorAll('[data-panel]').forEach(x=>x.hidden=x.dataset.panel!==b.dataset.tab);});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-current',String(x===b)));document.querySelectorAll('[data-panel]').forEach(x=>x.hidden=x.dataset.panel!==b.dataset.tab);if(b.dataset.tab==='history')loadHistory();});
 document.querySelectorAll('[data-menu]').forEach(input=>input.onchange=async()=>{const file=input.files[0];if(!file)return;if(file.size>4000000){status('Choose a PDF smaller than 4 MB.',true);input.value='';return;}setBusy(true);status('Uploading menu…');try{const data=await api({method:'POST',headers:{'Content-Type':'application/pdf'},body:file});content[input.dataset.menu]=data.url;menuLinks();changed();status('Menu uploaded. Preview or publish to make it live.');}catch(e){status(e.message,true);}finally{input.value='';setBusy(false);}});
 $('#publish').onclick=async()=>{if(busy)return;let clean;try{clean=validate(content);}catch(e){status(e.message,true);return;}setBusy(true);status('Publishing…');try{const data=await api({method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:clean,version})});content=data.content;version=data.version;dirty=false;fill();status('Published. Your website has been updated.');}catch(e){status(e.message,true);}finally{setBusy(false);}};
 $('#preview').onclick=async()=>{
@@ -56,3 +58,29 @@ try{
  if(hash.has('invite_token')||hash.has('recovery_token')){authMode=hash.has('invite_token')?'invite':'recovery';authToken=hash.get(authMode==='invite'?'invite_token':'recovery_token');history.replaceState(null,'','/admin');$('#login-panel').hidden=false;$('#email-field').hidden=true;$('#login-email').required=false;$('#forgot').hidden=true;$('#login-password').autocomplete='new-password';$('#login-title').textContent=authMode==='invite'?'Set up your editor account':'Reset your password';$('#login-help').textContent='Choose a password of at least 12 characters.';$('#login-button').textContent='Set password';status('');}
  else{await handleAuthCallback();await openEditor();}
 }catch(e){$('#login-panel').hidden=false;status('Editor login is not available yet. Please contact your website designer.',true);}
+
+const fieldNames={address:'Address',dinner:'Dinner hours',lunch:'Lunch hours',note:'Reservation note',orderTitle:'Ordering heading',orderNote:'Ordering information',signupTitle:'Mailing list heading',menu:'Main menu',kidsMenu:'Kids menu',announcements:'Announcements'};
+async function loadHistory(older=false){
+ try{status('Loading history…');await refreshSession();
+ const result=await fetch('/api/cms?audit=1'+(older&&historyNext?'&cursor='+encodeURIComponent(historyNext):''),{cache:'no-store'});
+ const data=await result.json();if(!result.ok)throw Error(data.error||'History could not load.');
+ historyEvents=older?[...historyEvents,...data.events]:data.events;uploadEvents=data.uploads;historyNext=data.next;renderHistory();status('History loaded.');
+ }catch(e){status(e.message,true);}
+}
+function renderHistory(){
+ const list=$('#history-list');list.replaceChildren();
+ const events=[...historyEvents,...uploadEvents].sort((a,b)=>b.at.localeCompare(a.at));
+ if(!events.length){const p=document.createElement('p');p.textContent='No recorded changes yet. New publications and uploads will appear here.';list.append(p);}
+ for(const event of events){const d=document.createElement('details'),summary=document.createElement('summary');
+ summary.textContent=`${new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short',timeZone:'Australia/Brisbane'}).format(new Date(event.at))} AEST · ${event.actor.email||event.actor.id} · ${event.action==='publish'?'Published changes':'Uploaded PDF'}`;d.append(summary);
+ const identity=document.createElement('p');identity.className='muted';identity.textContent='Account ID: '+event.actor.id;d.append(identity);
+ if(event.action==='publish'){
+  const changed=Object.keys(fieldNames).filter(key=>JSON.stringify(event.before[key])!==JSON.stringify(event.after[key]));
+  if(!changed.length){const p=document.createElement('p');p.textContent='Published without content changes.';d.append(p);}
+  for(const key of changed){const heading=document.createElement('h3');heading.textContent=fieldNames[key];const pre=document.createElement('pre');const value=v=>typeof v==='string'?v:JSON.stringify(v,null,2);pre.textContent='Before:\n'+value(event.before[key])+'\n\nAfter:\n'+value(event.after[key]);d.append(heading,pre);}
+ }else{const p=document.createElement('p');p.textContent=`PDF uploaded (${event.bytes.toLocaleString()} bytes). Uploading alone does not publish the menu.`;const link=document.createElement('a');link.href=event.url;link.target='_blank';link.rel='noopener';link.textContent='View uploaded PDF';d.append(p,link);}list.append(d);
+ }
+ $('#older-history').hidden=!historyNext;$('#export-history').disabled=!events.length;
+}
+$('#refresh-history').onclick=()=>loadHistory();$('#older-history').onclick=()=>loadHistory(true);
+$('#export-history').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({exportedAt:new Date().toISOString(),publications:historyEvents,uploads:uploadEvents,next:historyNext},null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='pocky-change-log.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
