@@ -3,7 +3,7 @@ import {validate,bookingURL,activeAnnouncements} from './cms-schema.mjs';
 const $=s=>document.querySelector(s);let content,version,dirty=false,busy=false,user,authMode='login',authToken='';
 function status(message,error=false){$('#status').textContent=message;$('#status').classList.toggle('error',error);}
 function changed(){dirty=true;$('#save-state').textContent='Unpublished changes';}
-function setBusy(value){busy=value;$('#publish').disabled=value;document.querySelectorAll('[data-menu]').forEach(e=>e.disabled=value);}
+function setBusy(value){busy=value;document.querySelectorAll('#editor button, #editor input, #editor textarea').forEach(e=>e.disabled=value);}
 async function api(options={}){await refreshSession();const response=await fetch('/api/cms',{...options,cache:'no-store'});let data;try{data=await response.json();}catch{throw Error('The editor service is unavailable. Please try again.');}if(!response.ok)throw Error(data.error||'Request failed.');return data;}
 async function openEditor(){
  user=await getUser();$('#login-panel').hidden=!!user;$('#logout').hidden=!user;$('#editor').hidden=true;
