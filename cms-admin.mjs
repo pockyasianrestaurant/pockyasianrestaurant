@@ -1,5 +1,5 @@
 import {login,logout,getUser,handleAuthCallback,acceptInvite,recoverPassword,requestPasswordRecovery,refreshSession,onAuthChange} from '@netlify/identity';
-import {validate,bookingURL,activeAnnouncements} from './cms-schema.mjs';
+import {validate,activeAnnouncements} from './cms-schema.mjs';
 const $=s=>document.querySelector(s);let content,version,dirty=false,busy=false,user,authMode='login',authToken='';
 function status(message,error=false){$('#status').textContent=message;$('#status').classList.toggle('error',error);}
 function changed(){dirty=true;$('#save-state').textContent='Unpublished changes';}
@@ -27,15 +27,11 @@ function renderCards(){
  const remove=document.createElement('button');remove.type='button';remove.textContent='Remove announcement';remove.style.marginTop='1rem';remove.onclick=()=>{content.announcements=content.announcements.filter(x=>x.id!==a.id);changed();renderCards();};card.append(remove);list.append(card);
  }
 }
-function add(template){
+function add(){
  if(content.announcements.length>=20){status('You can have up to 20 announcements.',true);return;}
- const a={id:crypto.randomUUID(),enabled:false,title:'New announcement',message:'',button:'',link:'',start:'',end:''};
- if(template==='closure'){a.title='Closed this Saturday';a.message='We will be closed this Saturday. We look forward to welcoming you back soon.';}
- if(template==='christmas'){a.title='Book for Christmas lunch';a.message='Celebrate Christmas with us. Reserve your table for Christmas lunch.';a.button='Book Christmas lunch';a.link=bookingURL;}
- if(template==='fathers'){a.title='Celebrate Father’s Day at Pocky';a.message='Treat Dad to a meal with us. Book your table for Father’s Day.';a.button='Book a table';a.link=bookingURL;}
- content.announcements.push(a);changed();renderCards();status('Announcement added as off. Edit it, enable it, preview, then publish.');
+ content.announcements.push({id:crypto.randomUUID(),enabled:false,title:'New announcement',message:'',button:'',link:'',start:'',end:''});changed();renderCards();status('Announcement added as off. Edit it, enable it, preview, then publish.');
 }
-$('#add-announcement').onclick=()=>add();document.querySelectorAll('[data-template]').forEach(b=>b.onclick=()=>add(b.dataset.template));
+$('#add-announcement').onclick=()=>add();
 document.querySelectorAll('[data-field]').forEach(el=>el.addEventListener('input',()=>{content[el.dataset.field]=el.value;changed();}));
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-current',String(x===b)));document.querySelectorAll('[data-panel]').forEach(x=>x.hidden=x.dataset.panel!==b.dataset.tab);if(b.dataset.tab==='history')loadHistory();});
 document.querySelectorAll('[data-menu]').forEach(input=>input.onchange=async()=>{const file=input.files[0];if(!file)return;if(file.size>4000000){status('Choose a PDF smaller than 4 MB.',true);input.value='';return;}setBusy(true);status('Uploading menu…');try{const data=await api({method:'POST',headers:{'Content-Type':'application/pdf'},body:file});content[input.dataset.menu]=data.url;menuLinks();changed();status('Menu uploaded. Preview or publish to make it live.');}catch(e){status(e.message,true);}finally{input.value='';setBusy(false);}});
