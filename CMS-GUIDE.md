@@ -1,6 +1,6 @@
 # Pocky website editor
 
-The editor is designed for pockyasianrestaurant.com.au/admin. It works on phones and computers. Your account needs to be invited by the website designer.
+The editor is live at [pockyasianrestaurant.com.au/admin](https://pockyasianrestaurant.com.au/admin). It works on phones and computers. Your account needs to be invited by the website designer.
 
 ## Add a banner and popup
 
@@ -42,4 +42,10 @@ The implementation uses Netlify Identity 2.0 and Netlify Blobs. It does not gran
 
 ## Verification completed
 
-Production build completed locally. Eight automated checks cover schema limits, unsafe links, AEST schedule boundaries, valid menu paths, public defaults, editor authorization and origin checks, conflicting edits, and PDF validation. Browser checks cover local preview publication, banner and popup rendering, popup dismissal, and a 390 px mobile editor layout. Real login and production publishing require Identity activation and an invited editor account, and must be verified before handover.
+Production build completed locally. Eight automated checks cover schema limits, unsafe links, AEST schedule boundaries, valid menu paths, public defaults, editor authorization and origin checks, conflicting edits, and PDF validation. Browser checks cover local preview publication, banner and popup rendering, popup dismissal, and a 390 px mobile editor layout. The live editor, content API and PDF links passed deployment checks. Unauthenticated and cross-origin writes were rejected. Invite-only Identity is active, and nicholasgoodridge@hotmail.com has been invited with the content-editor role. The designer has confirmed successful real announcement publishing and PDF menu uploads.
+
+## Designer change log
+
+Sign into your existing designer account and choose **Change log**. You can inspect who published each revision, when, and the before/after values; view PDF upload records; load older publications; and download the loaded history as JSON. Only the designer Identity account configured in the website code can read this log, and it must still have the content-editor role. New editors cannot access or delete history. Keep exported logs private.
+
+Audit recording starts with this update. Earlier changes cannot be attributed retrospectively. Published revisions preserve full before/after snapshots for designer-led recovery. The log identifies the account used, not proof of the person operating it; it does not detect every unsuccessful login or attempted attack. Changes made directly through Netlify/GitHub outside the CMS are outside this log.
