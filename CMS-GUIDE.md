@@ -5,9 +5,9 @@ The editor is live at [pockyasianrestaurant.com.au/admin](https://pockyasianrest
 ## Add a banner and popup
 
 1. Sign in and choose **Announcements**.
-2. Choose **Add announcement**, or start with **Closed this Saturday**, **Christmas lunch**, or **Father’s Day**.
+2. Choose **+ Add announcement**.
 3. Enter a short title for the banner, and the longer message for the popup.
-4. Add a button label and an HTTPS booking link if needed. Holiday templates include Pocky’s booking portal.
+4. Add a button label and an HTTPS booking link if needed. Pocky’s booking portal is https://bookings.obeeapp.com/pockyasianrestaurant.
 5. Switch **Enabled** on. Add start and end times if you want it scheduled. All times use Queensland time (AEST).
 6. Choose **Preview changes**, then **Publish changes**.
 
